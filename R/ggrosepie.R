@@ -5,6 +5,8 @@
 #' @param count_type Data frame type, chosen from "count" and "full". "count" means summarized data and "full" means full data. Default: count.
 #' @param fill_color Colors used. When length of \code{group_key} is two, color the subgroup, otherwise the main group. Default: NULL (conduct automatic selection).
 #' @param label_info Label information type, chosen from count, ratio and all (count and ratio). Default: count.
+#' @param label_split Pattern used to split the label, support regular expression. Default: NULL.
+#' @param label_len The length of label text. Used when \code{label_split} is NULL. Default: 40.
 #' @param label_color Color of the label. When length of \code{group_key} is two, this should be set to one color. Default: black.
 #' @param sort Logical value, whether to order the plot by counts. Default: TRUE.
 #' @param show_tick Logical value, whether to show the tick. Default: TRUE.
@@ -18,6 +20,7 @@
 #' @param donut_label_size The label size of center label. Default: 4.
 #' @param donut_label_color The color of center label. Default: red.
 #' @param border_color Border color. Default: black.
+#' @param border_size Border thickness. Default: 1.
 #'
 #' @return A ggplot2 object.
 #' @export
@@ -27,6 +30,7 @@
 #' @importFrom grDevices colorRampPalette
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom scales percent extended_breaks
+#' @importFrom stringr str_wrap
 #' @importFrom stats median
 #' @import ggplot2
 #'
@@ -68,8 +72,10 @@
 #'   tick_break = c(3000, 5000, 7000, 11000), donut_frac = 0.3, donut_label_size = 3
 #' )
 ggrosepie <- function(data, group_key = NULL, count_type = c("count", "full"), fill_color = NULL, label_info = c("count", "ratio", "all"),
-                      label_color = "black", sort = TRUE, show_tick = TRUE, tick_break = NULL, show_label = TRUE, label_sep = "|", label_gap = 0.05,
-                      label_size = 4, donut_frac = 0.1, donut_label = TRUE, donut_label_size = 4, donut_label_color = "red", border_color = "black") {
+                      label_split = NULL, label_len = 40, label_color = "black", sort = TRUE, show_tick = TRUE, tick_break = NULL,
+                      show_label = TRUE, label_sep = "|", label_gap = 0.05, label_size = 4,
+                      donut_frac = 0.1, donut_label = TRUE, donut_label_size = 4, donut_label_color = "red",
+                      border_color = "black", border_size = 1) {
   # check parameters
   count_type <- match.arg(arg = count_type)
   label_info <- match.arg(arg = label_info)
@@ -78,7 +84,7 @@ ggrosepie <- function(data, group_key = NULL, count_type = c("count", "full"), f
   if (length(group_key) == 1) {
     plot.data <- PrepareData(
       data = data, group_key = group_key, count_type = count_type, fill_color = fill_color,
-      label_info = label_info, label_split = NULL, label_color = label_color
+      label_info = label_info, label_split = NULL, label_len = NULL, label_color = label_color
     )
     data <- plot.data[["data"]]
     fill_color <- plot.data[["fill_color"]]
@@ -110,7 +116,7 @@ ggrosepie <- function(data, group_key = NULL, count_type = c("count", "full"), f
       rose_plot <- ggplot() +
         geom_bar(
           data = data, mapping = aes_string(x = "group", y = "count", fill = "group"),
-          stat = "identity", color = border_color
+          stat = "identity", color = border_color, size = border_size
         ) +
         coord_polar(theta = "x", start = start_pi, clip = "off") +
         theme_bw() +
@@ -167,6 +173,14 @@ ggrosepie <- function(data, group_key = NULL, count_type = c("count", "full"), f
           label_df$label <- paste0(label_df$Sum, " (", scales::percent(label_df$Sum / sum(label_df$Sum)), ")")
         }
         label_df$label <- paste(label_df$group, label_df$label, sep = label_sep)
+        # split label or specify label length
+        if (!is.null(label_split)) {
+          label_df$label <- gsub(pattern = label_split, replacement = "\n", x = label_df$label)
+        } else {
+          if (!is.null(label_len)) {
+            label_df$label <- stringr::str_wrap(label_df$label, width = label_len)
+          }
+        }
         # calculate angle
         label_df$id <- 1:nrow(label_df)
         angle <- 90 - 360 * (label_df$id - 0.5) / nrow(label_df) - start_pi * 60
@@ -197,7 +211,7 @@ ggrosepie <- function(data, group_key = NULL, count_type = c("count", "full"), f
       rose_plot <- ggplot() +
         geom_bar(
           data = data, mapping = aes_string(x = "group", y = "count", fill = "group"),
-          stat = "identity", color = border_color
+          stat = "identity", color = border_color, size = border_size
         ) +
         coord_polar(theta = "x", start = 0, clip = "off") +
         theme_bw() +
@@ -240,6 +254,14 @@ ggrosepie <- function(data, group_key = NULL, count_type = c("count", "full"), f
           label_df$label <- paste0(label_df$Sum, " (", scales::percent(label_df$Sum / sum(label_df$Sum)), ")")
         }
         label_df$label <- paste(label_df$group, label_df$label, sep = label_sep)
+        # split label or specify label length
+        if (!is.null(label_split)) {
+          label_df$label <- gsub(pattern = label_split, replacement = "\n", x = label_df$label)
+        } else {
+          if (!is.null(label_len)) {
+            label_df$label <- stringr::str_wrap(label_df$label, width = label_len)
+          }
+        }
         # calculate angle
         label_df$id <- 1:nrow(label_df)
         angle <- 90 - 360 * (label_df$id - 0.5) / nrow(label_df)
@@ -321,7 +343,7 @@ ggrosepie <- function(data, group_key = NULL, count_type = c("count", "full"), f
         rose_plot <- ggplot() +
           geom_bar(
             data = data, mapping = aes_string(x = group_key[1], y = "count", fill = group_key[2]),
-            stat = "identity", color = border_color
+            stat = "identity", color = border_color, size = border_size
           ) +
           coord_polar(theta = "x", start = start_pi, clip = "off") +
           theme_bw() +
@@ -379,6 +401,14 @@ ggrosepie <- function(data, group_key = NULL, count_type = c("count", "full"), f
             label_df$label <- paste0(label_df$Sum, " (", scales::percent(label_df$Sum / sum(label_df$Sum)), ")")
           }
           label_df$label <- paste(label_df$group, label_df$label, sep = label_sep)
+          # split label or specify label length
+          if (!is.null(label_split)) {
+            label_df$label <- gsub(pattern = label_split, replacement = "\n", x = label_df$label)
+          } else {
+            if (!is.null(label_len)) {
+              label_df$label <- stringr::str_wrap(label_df$label, width = label_len)
+            }
+          }
           # calculate angle
           label_df$id <- 1:nrow(label_df)
           angle <- 90 - 360 * (label_df$id - 0.5) / nrow(label_df) - start_pi * 60
@@ -408,7 +438,7 @@ ggrosepie <- function(data, group_key = NULL, count_type = c("count", "full"), f
         rose_plot <- ggplot() +
           geom_bar(
             data = data, mapping = aes_string(x = group_key[1], y = "count", fill = group_key[2]),
-            stat = "identity", color = border_color
+            stat = "identity", color = border_color, size = border_size
           ) +
           coord_polar(theta = "x", start = 0, clip = "off") +
           theme_bw() +
@@ -451,6 +481,14 @@ ggrosepie <- function(data, group_key = NULL, count_type = c("count", "full"), f
             label_df$label <- paste0(label_df$Sum, " (", scales::percent(label_df$Sum / sum(label_df$Sum)), ")")
           }
           label_df$label <- paste(label_df$group, label_df$label, sep = label_sep)
+          # split label or specify label length
+          if (!is.null(label_split)) {
+            label_df$label <- gsub(pattern = label_split, replacement = "\n", x = label_df$label)
+          } else {
+            if (!is.null(label_len)) {
+              label_df$label <- stringr::str_wrap(label_df$label, width = label_len)
+            }
+          }
           # calculate angle
           label_df$id <- 1:nrow(label_df)
           angle <- 90 - 360 * (label_df$id - 0.5) / nrow(label_df)

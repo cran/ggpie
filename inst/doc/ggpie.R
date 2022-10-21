@@ -5,14 +5,17 @@ knitr::opts_chunk$set(
   dpi=60
 )
 
-## ----eval=FALSE---------------------------------------------------------------
+## ----cran_install, eval=FALSE, message=FALSE, warning=FALSE-------------------
 #  install.packages("ggpie")
 
-## ----eval=FALSE---------------------------------------------------------------
+## ----github_install, eval=FALSE, message=FALSE, warning=FALSE-----------------
 #  # install.package("remotes")   #In case you have not installed it.
 #  remotes::install_github("showteeth/ggpie")
 
-## ----prepare------------------------------------------------------------------
+## ----citation-----------------------------------------------------------------
+citation("ggpie")
+
+## ----prepare, message=FALSE, warning=FALSE------------------------------------
 library(ggpie)
 library(ggplot2)
 data(diamonds)
@@ -51,7 +54,7 @@ ggpie(data = diamonds, group_key = "cut", count_type = "full",
 ## ----pie_threashold_horizon_in------------------------------------------------
 ggpie(data = diamonds, group_key = "cut", count_type = "full",
       label_info = "all", label_type = "horizon", label_split = NULL,
-      label_size = 4, label_pos = "in", labal_threshold = 10)
+      label_size = 4, label_pos = "in", label_threshold = 10)
 
 ## ----donut_basic_no_label-----------------------------------------------------
 # with no label
@@ -90,12 +93,12 @@ ggdonut(data = diamonds, group_key = "cut", count_type = "full",
 ## ----donut_threashold_horizon_in----------------------------------------------
 ggdonut(data = diamonds, group_key = "cut", count_type = "full",
         label_info = "all", label_type = "horizon", label_split = NULL,
-        label_size = 4, label_pos = "in", labal_threshold = 10)
+        label_size = 4, label_pos = "in", label_threshold = 10)
 
 ## ----donut_threashold_horizon_in_no_split-------------------------------------
 ggdonut(data = diamonds, group_key = "cut", count_type = "full",
         label_info = "all", label_type = "horizon",
-        label_size = 4, label_pos = "in", labal_threshold = 10)
+        label_size = 4, label_pos = "in", label_threshold = 10)
 
 ## ----pie3d--------------------------------------------------------------------
 p1= ggpie3D(data = diamonds, group_key = "cut", count_type = "full", tilt_degrees = -10, label_size=2) + 
@@ -126,7 +129,7 @@ ggnestedpie(data = diamonds, group_key = c("cut", "color"), count_type = "full",
 ## ----nested_pie_inner_outer_circle_in_remove----------------------------------
 ggnestedpie(data = diamonds, group_key = c("cut", "color"), count_type = "full",
             inner_label_info = "all", inner_label_split = NULL,
-            inner_labal_threshold = 5, inner_label_size = 2,
+            inner_label_threshold = 5, inner_label_size = 2,
             outer_label_type = "circle", outer_label_pos = "in", outer_label_info = "all")
 
 ## ----nested_pie_inner_outer_circle_out----------------------------------------
@@ -137,22 +140,22 @@ ggnestedpie(data = diamonds, group_key = c("cut", "color"), count_type = "full",
 ## ----nested_pie_inner_outer_horizon_out_remove--------------------------------
 ggnestedpie(data = diamonds, group_key = c("cut", "color"), count_type = "full",
             inner_label_info = "all", inner_label_split = NULL,
-            inner_labal_threshold = 1, inner_label_size = 2,
+            inner_label_threshold = 1, inner_label_size = 2,
             outer_label_type = "horizon", outer_label_pos = "out", outer_label_info = "all")
 
 ## ----nested_pie_inner_outer_remove_horizon_in_remove--------------------------
 ggnestedpie(data = diamonds, group_key = c("cut", "color"), count_type = "full",
             inner_label_info = "all", inner_label_split = NULL,
-            inner_labal_threshold = 1, inner_label_size = 2,
+            inner_label_threshold = 1, inner_label_size = 2,
             outer_label_type = "horizon", outer_label_pos = "in",
-            outer_label_info = "all", outer_labal_threshold = 10)
+            outer_label_info = "all", outer_label_threshold = 10)
 
 ## ----nested_pie_blank_inner_outer---------------------------------------------
 ggnestedpie(data = diamonds, group_key = c("cut", "color"), count_type = "full", 
             r0 = 0.5, r1 = 1.5, r2 = 2.6,inner_label_info = "all", inner_label_split = NULL,
-            inner_labal_threshold = 1, inner_label_size = 2,
+            inner_label_threshold = 1, inner_label_size = 2,
             outer_label_type = "horizon", outer_label_pos = "in",
-            outer_label_info = "all", outer_labal_threshold = 10)
+            outer_label_info = "all", outer_label_threshold = 10)
 
 ## ----rose_pie_no_tick, fig.height=10, fig.width=18----------------------------
 # pie plot

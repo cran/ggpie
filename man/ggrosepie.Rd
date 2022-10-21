@@ -10,6 +10,8 @@ ggrosepie(
   count_type = c("count", "full"),
   fill_color = NULL,
   label_info = c("count", "ratio", "all"),
+  label_split = NULL,
+  label_len = 40,
   label_color = "black",
   sort = TRUE,
   show_tick = TRUE,
@@ -22,7 +24,8 @@ ggrosepie(
   donut_label = TRUE,
   donut_label_size = 4,
   donut_label_color = "red",
-  border_color = "black"
+  border_color = "black",
+  border_size = 1
 )
 }
 \arguments{
@@ -35,6 +38,10 @@ ggrosepie(
 \item{fill_color}{Colors used. When length of \code{group_key} is two, color the subgroup, otherwise the main group. Default: NULL (conduct automatic selection).}
 
 \item{label_info}{Label information type, chosen from count, ratio and all (count and ratio). Default: count.}
+
+\item{label_split}{Pattern used to split the label, support regular expression. Default: NULL.}
+
+\item{label_len}{The length of label text. Used when \code{label_split} is NULL. Default: 40.}
 
 \item{label_color}{Color of the label. When length of \code{group_key} is two, this should be set to one color. Default: black.}
 
@@ -61,6 +68,8 @@ ggrosepie(
 \item{donut_label_color}{The color of center label. Default: red.}
 
 \item{border_color}{Border color. Default: black.}
+
+\item{border_size}{Border thickness. Default: 1.}
 }
 \value{
 A ggplot2 object.

@@ -11,18 +11,22 @@ ggdonut(
   fill_color = NULL,
   label_info = c("count", "ratio", "all"),
   label_split = "[[:space:]]+",
+  label_len = 40,
   label_color = "black",
   label_type = c("circle", "horizon", "none"),
   label_pos = c("in", "out"),
   label_gap = 0.05,
-  labal_threshold = NULL,
+  label_threshold = NULL,
   label_size = 4,
   border_color = "black",
+  border_size = 1,
   r0 = 1,
   r1 = 3,
   donut.label = TRUE,
   donut.label.size = 4,
-  donut.label.color = "red"
+  donut.label.color = "red",
+  nudge_x = 1,
+  nudge_y = 1
 )
 }
 \arguments{
@@ -38,6 +42,8 @@ ggdonut(
 
 \item{label_split}{Pattern used to split the label, support regular expression. Default: space.}
 
+\item{label_len}{The length of label text. Used when \code{label_split} is NULL. Default: 40.}
+
 \item{label_color}{Color of the label. Default: black.}
 
 \item{label_type}{Label style, chosen from circle, horizon and none (no label). Default: circle.}
@@ -46,11 +52,13 @@ ggdonut(
 
 \item{label_gap}{Gap between label and pie plot, used when \code{label_pos} is out.}
 
-\item{labal_threshold}{Threashold of the ratio to determine label position (in/out pie). Default: NULL.}
+\item{label_threshold}{Threshold of the ratio to determine label position (in/out pie). Default: NULL.}
 
 \item{label_size}{Size of the label. Default: 4.}
 
 \item{border_color}{Border color. Default: black.}
+
+\item{border_size}{Border thickness. Default: 1.}
 
 \item{r0}{The radius of inner blank circle. Default: 1.}
 
@@ -61,6 +69,10 @@ ggdonut(
 \item{donut.label.size}{The label size of center label. Default: 4.}
 
 \item{donut.label.color}{The color of center label. Default: red.}
+
+\item{nudge_x}{Parameter of \code{\link{geom_text_repel}}. Default: 1.}
+
+\item{nudge_y}{Parameter of \code{\link{geom_text_repel}}. Default: 1.}
 }
 \value{
 A ggplot2 object.
@@ -108,15 +120,15 @@ ggdonut(
   label_info = "all", label_type = "horizon",
   label_size = 4, label_pos = "out"
 )
-# with label threashold
+# with label threshold
 ggdonut(
   data = diamonds, group_key = "cut", count_type = "full",
   label_info = "all", label_type = "horizon", label_split = NULL,
-  label_size = 4, label_pos = "in", labal_threshold = 10
+  label_size = 4, label_pos = "in", label_threshold = 10
 )
 ggdonut(
   data = diamonds, group_key = "cut", count_type = "full",
   label_info = "all", label_type = "horizon",
-  label_size = 4, label_pos = "in", labal_threshold = 10
+  label_size = 4, label_pos = "in", label_threshold = 10
 )
 }
